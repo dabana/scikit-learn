@@ -72,6 +72,7 @@ class _MultimetricScorer:
     scorers : dict
         Dictionary mapping names to callable scorers.
     """
+
     def __init__(self, **scorers):
         self._scorers = scorers
 
@@ -201,7 +202,8 @@ class _PredictScorer(_BaseScorer):
         score : float
             Score function applied to prediction of estimator on X.
         """
-
+        if hasattr(estimator, 'get_transformed_targets'):
+            y_true = estimator.get_transformed_targets(X, y_true)
         y_pred = method_caller(estimator, "predict", X)
         if sample_weight is not None:
             return self._sign * self._score_func(y_true, y_pred,
